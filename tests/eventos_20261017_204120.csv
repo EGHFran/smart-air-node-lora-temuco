@@ -1,0 +1,9 @@
+timestamp,tipo,detalle
+2026-10-17T20:41:55-03:00,INFO,puerto COM5 abierto
+2026-10-17T20:51:33-03:00,INFO,posible_reinicio_del_nodo
+2026-10-17T20:52:24-03:00,INFO,posible_reinicio_del_nodo
+2026-10-17T21:25:59-03:00,INFO,posible_reinicio_del_nodo
+2026-10-17T21:31:09-03:00,INFO,posible_reinicio_del_nodo
+2026-10-17T21:33:17-03:00,INFO,posible_reinicio_del_nodo
+2026-10-17T21:35:20-03:00,INFO,puerto desconectado
+2026-10-17T22:05:52-03:00,INFO,puerto COM5 abierto

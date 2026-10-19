@@ -1,0 +1,10 @@
+timestamp,tipo,detalle
+2026-10-18T16:19:57-03:00,INFO,puerto COM5 abierto
+2026-10-18T16:32:05-03:00,INFO,posible_reinicio_del_nodo
+2026-10-18T16:53:50-03:00,INFO,posible_reinicio_del_nodo
+2026-10-18T18:37:22-03:00,ERR,linea_demasiado_larga | 
+2026-10-18T18:37:51-03:00,INFO,posible_reinicio_del_nodo
+2026-10-18T18:47:19-03:00,ERR,linea_demasiado_larga | 
+2026-10-18T18:48:04-03:00,INFO,paquete_duplicado
+2026-10-18T18:54:01-03:00,INFO,posible_reinicio_del_nodo
+2026-10-18T19:24:13-03:00,INFO,paquete_duplicado
