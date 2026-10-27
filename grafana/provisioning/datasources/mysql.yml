@@ -1,0 +1,12 @@
+apiVersion: 1
+datasources:
+  - name: MySQL-Telemetria
+    type: mysql
+    uid: mysql-telemetria
+    access: proxy
+    url: host.docker.internal:3307
+    user: grafana_ro
+    jsonData:
+      database: telemetria_iot5
+    secureJsonData:
+      password: $MYSQL_GRAFANA_PASSWORD
