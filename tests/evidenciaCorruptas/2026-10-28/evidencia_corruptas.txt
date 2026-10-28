@@ -1,0 +1,2 @@
+[2026-10-28 12:29:55] ERR,linea_demasiado_larga,kcKM#{N,DRܷ-[(ԆE?ePUwy
+[2026-10-28 12:49:55] ERR,checksum,$N01E,6,6,8,10,Fmw=4,14*19
