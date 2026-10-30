@@ -4,14 +4,13 @@ API de telemetria de calidad del aire (FastAPI) -> lee MariaDB (solo lectura).
 Publico : /api/publico/estado, /api/publico/serie24h
 Admin   : /api/admin/login, /api/admin/serie, /api/admin/nodo, /api/admin/predicciones
 
-python -m uvicorn main:app --app-dir api --reload --port 8000
-
 Todos los timestamps de la base estan en UTC; la API los devuelve en ISO 8601 con 'Z'.
 """
 import hashlib
 import hmac
 import os
 import time
+from datetime import datetime
 from contextlib import contextmanager
 
 import pymysql
@@ -24,11 +23,11 @@ from pydantic import BaseModel
 load_dotenv()
 
 DB_CONFIG = {
-    "host": os.getenv("DB_HOST"),
-    "port": int(os.getenv("DB_PORT")),
-    "user": os.getenv("DB_USER"),      # usuario de SOLO LECTURA
-    "password": os.getenv("DB_PASS"),
-    "database": os.getenv("DB_NAME"),
+    "host": os.getenv("DB_HOST", "127.0.0.1"),
+    "port": int(os.getenv("DB_PORT", "3307")),
+    "user": os.getenv("DB_USER", "grafana_ro"),      # usuario de SOLO LECTURA
+    "password": os.getenv("DB_PASS", ""),
+    "database": os.getenv("DB_NAME", "telemetria_iot5"),
     "charset": "utf8mb4",
     "cursorclass": pymysql.cursors.DictCursor,
     "autocommit": True,
@@ -69,7 +68,11 @@ def consultar(sql, params=()):
 
 
 def iso(dt):
-    return dt.strftime("%Y-%m-%dT%H:%M:%SZ") if dt else None
+    if not dt:
+        return None
+    if isinstance(dt, str):                       # MariaDB puede devolver texto
+        dt = datetime.strptime(dt[:19], "%Y-%m-%d %H:%M:%S")
+    return dt.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def a_float(v):
@@ -131,15 +134,15 @@ def login(datos: Login):
 
 
 # ---------- Consultas compartidas ----------
-def serie_bucket(columnas, nodo, horas, bucket_min):
-    """Promedios por intervalo. 'columnas' viene de una lista blanca, no del usuario."""
+def serie_bucket(columnas, nodo, horas, bucket_min, tabla="lecturas_raw"):
+    """Promedios por intervalo. 'columnas' y 'tabla' son constantes del codigo, no del usuario."""
     seg = bucket_min * 60
     selects = ", ".join(f"AVG({c}) AS {c}" for c in columnas)
     sql = f"""
-        SELECT DATE_ADD('1970-01-01',
+        SELECT DATE_ADD(CAST('1970-01-01' AS DATETIME),
                  INTERVAL (TIMESTAMPDIFF(SECOND,'1970-01-01',timestamp) DIV %s * %s) SECOND) AS t,
                {selects}
-        FROM lecturas_raw
+        FROM {tabla}
         WHERE nodo_id = %s AND timestamp >= UTC_TIMESTAMP() - INTERVAL %s HOUR
         GROUP BY t ORDER BY t"""
     filas = consultar(sql, (seg, seg, nodo, horas))
@@ -157,9 +160,10 @@ def estado(nodo_id: str = NODO_DEFECTO):
         raise HTTPException(status_code=404, detail="Sin datos para este nodo")
     ult = ult[0]
     prom = consultar(
-        """SELECT AVG(pm2_5) AS pm2_5, AVG(pm10) AS pm10 FROM lecturas_raw
+        """SELECT AVG(pm2_5) AS pm2_5, AVG(pm10) AS pm10, MIN(timestamp) AS p, MAX(timestamp) AS u FROM lecturas_raw
            WHERE nodo_id = %s AND timestamp >= UTC_TIMESTAMP() - INTERVAL 24 HOUR""", (nodo_id,))[0]
     p25, p10 = a_float(prom["pm2_5"]), a_float(prom["pm10"])
+    horas_cub = round((prom["u"] - prom["p"]).total_seconds() / 3600, 1) if prom["p"] else 0
     niveles = [n for n in (nivel(p25, LIM_PM25), nivel(p10, LIM_PM10)) if n is not None]
     cat = CATEGORIAS[max(niveles)] if niveles else None
     return {
@@ -169,6 +173,7 @@ def estado(nodo_id: str = NODO_DEFECTO):
         "actual": {"pm2_5": ult["pm2_5"], "pm10": ult["pm10"],
                    "temperatura": a_float(ult["temperatura"]), "humedad": a_float(ult["humedad"])},
         "promedio_24h": {"pm2_5": p25, "pm10": p10},
+        "horas_cubiertas_24h": horas_cub,
         "categoria": None if cat is None else
             {"nombre": cat[0], "color": cat[1], "recomendacion": cat[2]},
     }
@@ -201,7 +206,11 @@ def admin_nodo(nodo_id: str = NODO_DEFECTO):
     if not filas:
         raise HTTPException(status_code=404, detail="Nodo sin datos o no registrado en 'nodos'")
     f = filas[0]
-    return {"nodo_id": nodo_id, "nombre": f["nombre"], "lat": float(f["lat"]), "lon": float(f["lon"]),
+    r = consultar("SELECT MIN(timestamp) AS p, MAX(timestamp) AS u, COUNT(*) AS n "
+                  "FROM lecturas_raw WHERE nodo_id = %s", (nodo_id,))[0]
+    horas_datos = round((r["u"] - r["p"]).total_seconds() / 3600, 1) if r["p"] else 0
+    return {"horas_datos": horas_datos, "primera_lectura": iso(r["p"]), "total_lecturas": r["n"],
+            "nodo_id": nodo_id, "nombre": f["nombre"], "lat": float(f["lat"]), "lon": float(f["lon"]),
             "rssi": f["rssi"], "recibidas": f["recibidas"], "corruptas": f["corruptas"],
             "perdidas": f["perdidas"], "perdida_pct": a_float(f["perdida_pct"]),
             "min_sin_datos": f["min_sin_datos"], "ultima_lectura": iso(f["timestamp"])}
@@ -220,6 +229,21 @@ def admin_predicciones(nodo_id: str = NODO_DEFECTO,
     return {"variable": variable,
             "real": [{"t": r["t"], "valor": r[variable]} for r in real],
             "predicho": [{"t": iso(p["timestamp"]), "valor": p["valor_predicho"]} for p in pred]}
+
+
+ESP_COLS = ["f1_415nm", "f2_445nm", "f3_480nm", "f4_515nm", "f5_555nm",
+            "f6_590nm", "f7_630nm", "f8_680nm", "clear_ch", "nir"]
+
+
+@app.get("/api/admin/espectro", dependencies=[Depends(requiere_admin)])
+def admin_espectro(nodo_id: str = NODO_DEFECTO,
+                   horas: int = Query(24, ge=1, le=720),
+                   bucket_min: int = Query(15, ge=1, le=1440)):
+    serie = serie_bucket(ESP_COLS, nodo_id, horas, bucket_min, "lecturas_espectro")
+    ult = consultar(f"SELECT timestamp, {', '.join(ESP_COLS)} FROM lecturas_espectro "
+                    "WHERE nodo_id = %s ORDER BY id DESC LIMIT 1", (nodo_id,))
+    ultimo = None if not ult else {"t": iso(ult[0]["timestamp"]), **{c: ult[0][c] for c in ESP_COLS}}
+    return {"serie": serie, "ultimo": ultimo}
 
 
 @app.get("/api/salud")
