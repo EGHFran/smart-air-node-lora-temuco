@@ -1,0 +1,9 @@
+python-telegram-bot[job-queue]>=21.0
+pandas>=2.0
+numpy>=1.26
+matplotlib>=3.8
+seaborn>=0.13
+SQLAlchemy>=2.0
+pymysql>=1.1        # MySQL/MariaDB. Para PostgreSQL: psycopg2-binary
+python-dotenv>=1.0
+tzdata                 # necesario en Windows para zoneinfo

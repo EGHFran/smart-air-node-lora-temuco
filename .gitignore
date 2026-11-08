@@ -4,3 +4,7 @@ __pycache__/
 .DS_Store
 .env
 api/.env
+web/node_modules
+web/.env
+ml/.env
+ml/modelo.joblib
