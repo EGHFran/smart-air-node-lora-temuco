@@ -23,11 +23,11 @@ from pydantic import BaseModel
 load_dotenv()
 
 DB_CONFIG = {
-    "host": os.getenv("DB_HOST", "127.0.0.1"),
-    "port": int(os.getenv("DB_PORT", "3307")),
-    "user": os.getenv("DB_USER", "grafana_ro"),      # usuario de SOLO LECTURA
+    "host": os.getenv("DB_HOST"),
+    "port": int(os.getenv("DB_PORT")),
+    "user": os.getenv("DB_USER"),      # usuario de SOLO LECTURA
     "password": os.getenv("DB_PASS", ""),
-    "database": os.getenv("DB_NAME", "telemetria_iot5"),
+    "database": os.getenv("DB_NAME", "telemetria_iot6"),
     "charset": "utf8mb4",
     "cursorclass": pymysql.cursors.DictCursor,
     "autocommit": True,
@@ -70,7 +70,7 @@ def consultar(sql, params=()):
 def iso(dt):
     if not dt:
         return None
-    if isinstance(dt, str):                       # MariaDB puede devolver texto
+    if isinstance(dt, str):                        # MariaDB puede devolver texto
         dt = datetime.strptime(dt[:19], "%Y-%m-%d %H:%M:%S")
     return dt.strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -128,7 +128,7 @@ def login(datos: Login):
     if not ADMIN_PASSWORD or not TOKEN_SECRET:
         raise HTTPException(status_code=500, detail="Servidor sin credenciales configuradas")
     if not hmac.compare_digest(datos.password, ADMIN_PASSWORD):
-        time.sleep(1)                                  # frena fuerza bruta basica
+        time.sleep(1)                              # frena fuerza bruta basica
         raise HTTPException(status_code=401, detail="Clave incorrecta")
     return {"token": crear_token(), "expira_horas": TOKEN_HORAS}
 
@@ -140,7 +140,7 @@ def serie_bucket(columnas, nodo, horas, bucket_min, tabla="lecturas_raw"):
     selects = ", ".join(f"AVG({c}) AS {c}" for c in columnas)
     sql = f"""
         SELECT DATE_ADD(CAST('1970-01-01' AS DATETIME),
-                 INTERVAL (TIMESTAMPDIFF(SECOND,'1970-01-01',timestamp) DIV %s * %s) SECOND) AS t,
+                   INTERVAL (TIMESTAMPDIFF(SECOND,'1970-01-01',timestamp) DIV %s * %s) SECOND) AS t,
                {selects}
         FROM {tabla}
         WHERE nodo_id = %s AND timestamp >= UTC_TIMESTAMP() - INTERVAL %s HOUR
@@ -222,13 +222,13 @@ def admin_predicciones(nodo_id: str = NODO_DEFECTO,
                        horas: int = Query(24, ge=1, le=720)):
     real = serie_bucket([variable], nodo_id, horas, 5)
     pred = consultar(
-        """SELECT timestamp, valor_predicho FROM predicciones
+        """SELECT timestamp, valor_predicho, modelo FROM predicciones
            WHERE nodo_id = %s AND variable = %s
              AND timestamp >= UTC_TIMESTAMP() - INTERVAL %s HOUR ORDER BY timestamp""",
         (nodo_id, variable, horas))
     return {"variable": variable,
             "real": [{"t": r["t"], "valor": r[variable]} for r in real],
-            "predicho": [{"t": iso(p["timestamp"]), "valor": p["valor_predicho"]} for p in pred]}
+            "predicho": [{"t": iso(p["timestamp"]), "valor": p["valor_predicho"], "modelo": p["modelo"]} for p in pred]}
 
 
 ESP_COLS = ["f1_415nm", "f2_445nm", "f3_480nm", "f4_515nm", "f5_555nm",
