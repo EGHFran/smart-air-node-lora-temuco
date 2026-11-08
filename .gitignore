@@ -6,3 +6,5 @@ __pycache__/
 api/.env
 web/node_modules
 web/.env
+ml/.env
+ml/modelo.joblib
