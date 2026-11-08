@@ -17,6 +17,8 @@ const RANGOS = [
   { txt: "3 días", horas: 72, bucket: 15 },
   { txt: "7 días", horas: 168, bucket: 60 },
 ];
+const VERSIONES = ["v1", "v2", "v3"];
+
 const fecha = (v) =>
   new Date(v).toLocaleString("es-CL", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
 const CANALES = [
@@ -54,18 +56,38 @@ function Gauge({ titulo, valor, max, lims }) {
 
 function Mapa({ nodo }) {
   const div = useRef(null);
+  const mapaRef = useRef(null);
+
   useEffect(() => {
-    if (!nodo) return;
-    const mapa = L.map(div.current).setView([nodo.lat, nodo.lon], 15);
-    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19, attribution: "© OpenStreetMap",
-    }).addTo(mapa);
+    if (!nodo || !div.current) return;
+    if (!mapaRef.current) {
+      mapaRef.current = L.map(div.current, { zoomAnimation: false, fadeAnimation: false })
+        .setView([nodo.lat, nodo.lon], 15);
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19, attribution: "© OpenStreetMap",
+      }).addTo(mapaRef.current);
+    }
+    return () => {
+      if (mapaRef.current) {
+        mapaRef.current.off();
+        mapaRef.current.remove();
+        mapaRef.current = null;
+      }
+    };
+  }, [nodo?.lat, nodo?.lon]);
+
+  useEffect(() => {
+    if (!nodo || !mapaRef.current) return;
     const r = nodo.rssi;
     const color = r == null ? "#6b7280" : r > -90 ? COLORES.verde : r > -110 ? COLORES.amarillo : COLORES.rojo;
+    mapaRef.current.eachLayer((layer) => {
+      if (layer instanceof L.CircleMarker) mapaRef.current.removeLayer(layer);
+    });
     L.circleMarker([nodo.lat, nodo.lon], { radius: 12, color, fillColor: color, fillOpacity: 0.8 })
-      .addTo(mapa).bindPopup(`${nodo.nombre}<br>RSSI: ${r} dBm`);
-    return () => mapa.remove();
+      .addTo(mapaRef.current)
+      .bindPopup(`${nodo.nombre}<br>RSSI: ${r} dBm`);
   }, [nodo]);
+
   return <div ref={div} className="mapa" />;
 }
 
@@ -84,6 +106,7 @@ const linea = (label, data, color, eje = "y") =>
 
 function Panel({ salir }) {
   const [rango, setRango] = useState(RANGOS[1]);
+  const [ver, setVer] = useState("v3");
   const [d, setD] = useState(null);
   const [error, setError] = useState(null);
 
@@ -111,10 +134,17 @@ function Panel({ salir }) {
     linea("Temperatura (°C)", puntos(serie, "temperatura"), "#ea580c", "y1"),
     linea("Humedad (%)", puntos(serie, "humedad"), "#0d9488", "y1"),
   ];
-  const dsPred = [
-    linea("PM2.5 real", pred.real.map((p) => ({ x: Date.parse(p.t), y: p.valor })).filter((p) => p.y != null), "#2563eb"),
-    { ...linea("PM2.5 predicho (ML)", pred.predicho.map((p) => ({ x: Date.parse(p.t), y: p.valor })), "#ea580c"), borderDash: [8, 6] },
-  ];
+
+  const realPts = pred.real.map((p) => ({ x: Date.parse(p.t), y: p.valor })).filter((p) => p.y != null);
+  const porModelo = pred.predicho
+    .filter((p) => p.modelo && (p.modelo.endsWith(`_${ver}`) || p.modelo.includes(`_${ver}_`)))
+    .reduce((acc, p) => {
+      const m = p.modelo;
+      (acc[m] = acc[m] || []).push({ x: Date.parse(p.t), y: p.valor });
+      return acc;
+    }, {});
+  const coloresMod = ["#ea580c", "#16a34a", "#7c3aed", "#dc2626", "#0d9488"];
+
   const dsEsp = [
     ...CANALES.map(([k, l, c]) => linea(l, puntos(esp.serie, k), c)),
     linea("Clear", puntos(esp.serie, "clear_ch"), "#6b7280", "y1"),
@@ -184,13 +214,41 @@ function Panel({ salir }) {
         </section>
       </div>
 
-      <section className="tarjeta">
-        <h3>PM2.5: real vs. predicho por ML</h3>
-        {pred.predicho.length === 0 && <p className="nota">Aún no hay predicciones registradas.</p>}
-        <div className="grafico"><Line data={{ datasets: dsPred }} options={opcionesTiempo({
-          y: { beginAtZero: true, title: { display: true, text: "µg/m³" } },
-        })} /></div>
-      </section>
+      <div className="barra" style={{ marginTop: "1rem" }}>
+        <span>Versión de modelos:</span>
+        {VERSIONES.map((v) => (
+          <button key={v} className={v === ver ? "activo" : ""} onClick={() => setVer(v)}>
+            {v.toUpperCase()}
+          </button>
+        ))}
+      </div>
+
+      {Object.keys(porModelo).length === 0 ? (
+        <section className="tarjeta">
+          <h3>PM2.5: real vs. predicho ({ver.toUpperCase()})</h3>
+          <p className="nota">No hay predicciones de la versión {ver.toUpperCase()} en este rango de tiempo.</p>
+        </section>
+      ) : (
+        <div className="dos">
+          {Object.entries(porModelo).map(([nombreMod, pts], idx) => {
+            const color = coloresMod[idx % coloresMod.length];
+            const ds = [
+              linea("PM2.5 real", realPts, "#2563eb"),
+              { ...linea(`Predicho (${nombreMod})`, pts, color), borderDash: [8, 6], pointRadius: pts.length < 3 ? 4 : 0 },
+            ];
+            return (
+              <section className="tarjeta" key={nombreMod}>
+                <h3>PM2.5: real vs. {nombreMod}</h3>
+                <div className="grafico">
+                  <Line data={{ datasets: ds }} options={opcionesTiempo({
+                    y: { beginAtZero: true, title: { display: true, text: "µg/m³" } },
+                  })} />
+                </div>
+              </section>
+            );
+          })}
+        </div>
+      )}
     </>
   );
 }
