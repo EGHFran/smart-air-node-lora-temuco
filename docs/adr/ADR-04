@@ -1,0 +1,15 @@
+# ADR-04: Estrategia de Despliegue del Sistema (Servidor)
+
+## 1. Contexto
+Inicialmente el sistema (registrador, MariaDB, Grafana, API) operaba exclusivamente en un entorno local (PC de la autora), lo cual limitaba las pruebas de disponibilidad continua y no demostraba un escenario de producción realista. Se evaluó contratar un VPS comercial o solicitar infraestructura a la universidad.
+
+## 2. Decisión
+Se decide alojar el sistema completo en un servidor proporcionado por la Universidad Católica de Temuco, tras obtener la autorización de acceso por parte del profesor Mario Villanueva.
+
+## 3. Justificación
+* El despliegue en infraestructura de la universidad cumple directamente con la recomendación del profesor guía en la retroalimentación (RET-08).
+* Permite probar el sistema (bases de datos, Docker, contenedores) en un entorno de red real e ininterrumpido sin incurrir en costos personales de VPS (como AWS o DigitalOcean).
+* Simplifica el experimento de alcance LoRa, ya que el nodo receptor estará fijo y energizado en una ubicación estratégica y conocida dentro del campus.
+
+## 4. Estado
+Aplicada (Acceso autorizado verbalmente el 5 de noviembre de 2026. Despliegue en proceso).
