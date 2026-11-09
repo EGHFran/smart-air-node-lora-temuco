@@ -184,6 +184,24 @@ def serie24h(nodo_id: str = NODO_DEFECTO):
     return serie_bucket(["pm2_5", "temperatura", "humedad"], nodo_id, 24, 60)
 
 
+@app.get("/api/publico/predicciones-manana")
+def predicciones_manana(nodo_id: str = NODO_DEFECTO, variable: str = Query("pm2_5", pattern="^(pm2_5|pm10|temperatura)$")):
+    # Consultamos las predicciones recientes / futuras (ej. últimas 6h y hacia adelante)
+    pred = consultar(
+        """SELECT timestamp, valor_predicho, modelo FROM predicciones
+           WHERE nodo_id = %s AND variable = %s
+             AND timestamp >= UTC_TIMESTAMP() - INTERVAL 6 HOUR ORDER BY timestamp""",
+        (nodo_id, variable))
+    
+    # Limitamos los datos reales a solo las últimas 6 horas para que el gráfico no se sature de días pasados
+    real = serie_bucket([variable], nodo_id, 6, 5)
+
+    return {
+        "variable": variable,
+        "real": [{"t": r["t"], "valor": r[variable]} for r in real],
+        "predicho": [{"t": iso(p["timestamp"]), "valor": p["valor_predicho"], "modelo": p["modelo"]} for p in pred]
+    }
+
 # ---------- Admin ----------
 @app.get("/api/admin/serie", dependencies=[Depends(requiere_admin)])
 def admin_serie(nodo_id: str = NODO_DEFECTO,
