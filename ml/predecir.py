@@ -58,7 +58,7 @@ def ciclo():
         return
 
     X = construir(cargar(4), con_objetivo=False)
-    if X.empty or datetime.utcnow() - X.index[-1].to_pydatetime() > timedelta(minutes=20):
+    if X.empty or datetime.utcnow() - X.index[-1].to_pydatetime() > timedelta(minutes=60):
         print("Sin datos recientes del nodo: no se predice.")
         return
     t = X.index[-1]
