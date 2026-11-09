@@ -1,0 +1,110 @@
+[2026-11-08T15:55:30-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:55:33-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:55:41-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:55:44-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:55:52-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:55:55-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:56:03-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:56:06-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:56:14-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:56:17-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:56:25-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:56:28-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:56:36-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:56:39-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:56:47-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:56:50-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:56:58-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:57:01-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:57:09-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:57:12-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:57:20-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:57:23-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:57:31-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:57:34-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:57:42-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:57:45-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:57:53-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:57:56-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:58:04-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:58:08-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:58:16-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:58:19-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:58:27-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:58:30-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:58:38-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:58:41-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:58:49-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:58:52-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:59:00-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:59:03-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:59:11-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:59:14-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:59:22-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:59:25-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:59:33-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:59:36-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:59:44-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:59:47-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T15:59:55-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T15:59:58-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:00:06-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:00:09-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:00:17-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:00:20-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:00:28-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:00:31-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:00:39-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:00:42-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:00:50-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:00:53-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:01:01-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:01:04-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:01:12-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:01:15-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:01:23-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:01:26-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:01:34-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:01:37-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:01:45-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:01:48-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:01:56-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:01:59-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:02:07-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:02:10-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:02:18-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:02:21-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:02:29-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:02:32-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:02:40-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:02:43-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:02:51-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:02:54-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:03:02-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:03:05-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:03:13-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:03:16-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:03:24-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:03:27-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:03:35-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:03:38-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:03:46-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:03:49-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:03:57-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:04:00-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:04:08-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:04:11-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:04:19-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:04:22-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:04:30-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:04:33-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:04:41-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:04:44-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:04:52-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:04:55-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:05:03-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:05:06-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:05:14-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:05:17-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
+[2026-11-08T16:05:25-03:00] ERR,CRC_FAIL,Trama invalida desde nodo 2
+[2026-11-08T16:05:28-03:00] ERR,SIZE_ERROR,Longitud de payload incorrecta
