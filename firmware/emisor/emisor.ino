@@ -20,23 +20,37 @@
 #include <esp_task_wdt.h>
 
 // ---------- Configuracion ----------
+<<<<<<< Updated upstream
 #define ID_NODO "N01"
 const uint32_t PERIODO_MS = 300000UL;          // 5 min en operacion; usar 30000 en pruebas aceleradas (D-10)
 const uint32_t ESTABILIZACION_MS = 30000UL;  // 30 s al arrancar (PMS5003)
 const int NO_DISP = -999;
 const uint8_t CPU_FREC_MHZ = 80;
+=======
+#define ID_NODO              "N01"
+const uint32_t PERIODO_MS         = 5000UL;  // 5 min en operacion; usar 30000 en pruebas aceleradas (D-10)
+const uint32_t ESTABILIZACION_MS  = 30000UL;   // 30 s al arrancar (PMS5003)
+const int      NO_DISP            = -999;
+const uint8_t  CPU_FREC_MHZ            = 80;
+>>>>>>> Stashed changes
 
 // AS7341: ganancia e integracion (tiempo = (ATIME+1)*(ASTEP+1)*2,78 us = 50 ms)
 const as7341_gain_t LUZ_GANANCIA = AS7341_GAIN_1X+;
 const uint8_t LUZ_ATIME = 29;
 const uint16_t LUZ_ASTEP = 599;
 
+<<<<<<< Updated upstream
 // Trama de espectro (10 canales) ademas de la trama normal
 const bool ENVIAR_ESPECTRO = true;
 
 // Prueba P-03: true = corrompe 1 de cada PRUEBA_CADA tramas normales (volver a false despues)
 const bool PRUEBA_CHECKSUM = false;
 const uint16_t PRUEBA_CADA = 10;
+=======
+// Prueba P-03: true = corrompe 1 de cada PRUEBA_CADA tramas (volver a false despues)
+const bool     PRUEBA_CHECKSUM    = true;
+const uint16_t PRUEBA_CADA        = 10;
+>>>>>>> Stashed changes
 
 // Watchdog (poner USAR_WATCHDOG en 0 si da error de compilacion con tu version del core)
 #define USAR_WATCHDOG 1
