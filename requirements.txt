@@ -1,0 +1,3 @@
+-r api/requirements.txt
+-r ml/requirements.txt
+-r tools/alerts_telegram/requirements.txt

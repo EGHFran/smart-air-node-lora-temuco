@@ -1,0 +1,26 @@
+:root { font-family: system-ui, sans-serif; color: #1f2937; background: #f3f4f6; }
+body { margin: 0; }
+.pagina { max-width: 760px; margin: 0 auto; padding: 16px; }
+h1 { margin: 0; font-size: 1.5rem; }
+.sub { margin: 4px 0 16px; color: #6b7280; font-size: .9rem; }
+.aviso { background: #fef3c7; border: 1px solid #f59e0b; padding: 10px 12px; border-radius: 8px; }
+.estado { border-radius: 14px; padding: 20px; margin-bottom: 16px; color: #fff; }
+.estado h2 { margin: 4px 0 8px; font-size: 2.4rem; }
+.estado p { margin: 0; }
+.estado-etiqueta { opacity: .9; font-size: .9rem; }
+.estado.green { background: #16a34a; }
+.estado.yellow { background: #ca8a04; }
+.estado.red { background: #dc2626; }
+.datos { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.dato { background: #fff; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; }
+.dato-valor { font-size: 1.8rem; font-weight: 700; }
+.dato-valor small { font-size: .9rem; font-weight: 400; color: #6b7280; }
+.dato-etiqueta { color: #6b7280; font-size: .85rem; }
+.tarjeta { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+.tarjeta h3 { margin-top: 0; }
+.grafico { height: 280px; }
+.niveles { list-style: none; padding: 0; }
+.niveles li { margin: 8px 0; }
+.punto { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; }
+.punto.green { background: #16a34a; } .punto.yellow { background: #ca8a04; } .punto.red { background: #dc2626; }
+.nota { color: #6b7280; font-size: .8rem; }

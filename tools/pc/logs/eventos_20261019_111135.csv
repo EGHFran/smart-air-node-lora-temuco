@@ -1,0 +1,4 @@
+timestamp,tipo,detalle
+2026-10-19T11:11:35-03:00,INFO,puerto COM6 abierto
+2026-10-19T11:11:51-03:00,ERR,"checksum | $N01,450,7,10,12,21.1,997.6,-999,98*6C"
+2026-10-19T11:12:44-03:00,INFO,puerto desconectado
