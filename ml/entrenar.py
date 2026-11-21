@@ -3,7 +3,12 @@
 Evaluacion: validacion cruzada temporal (TimeSeriesSplit) con MAE, RMSE y R2.
 Seleccion del mejor modelo por RMSE promedio. Incluye analisis por situacion
 (PM2.5 estable vs cambio brusco en la hora siguiente).
+
+Al final guarda en la tabla 'predicciones' las predicciones FUERA DE MUESTRA de la
+validacion cruzada (modelos *_cv_<VERSION>), que son las unicas sin sesgo para graficar.
 """
+from datetime import timedelta
+
 import joblib
 import numpy as np
 import pandas as pd
@@ -15,8 +20,9 @@ from sklearn.model_selection import TimeSeriesSplit
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
-from comun import PASOS_ADELANTE, cargar, construir
+from comun import NODO, PASOS_ADELANTE, cargar, conectar, construir
 
+VERSION = "v3"              # cambiar a v4, v5... al reentrenar
 N_FOLDS = 4
 PERCENTIL_BRUSCO = 0.80     # el 20 % de casos con mayor |cambio| se considera "cambio brusco"
 
@@ -49,6 +55,24 @@ def metricas(real_abs, pred_abs, pm25_actual):
         "r2": r2_score(real_abs, pred_abs),
         "r2_delta": r2_score(real_d, pred_d),
     }
+
+
+def guardar_cv(oof, nombres_modelos):
+    """Guarda en 'predicciones' las predicciones fuera de muestra de la validacion cruzada."""
+    conn = conectar(escritura=True)
+    try:
+        with conn.cursor() as cur:
+            for nombre in nombres_modelos:
+                modelo = f"{nombre}_cv_{VERSION}"
+                cur.execute("DELETE FROM predicciones WHERE nodo_id=%s AND variable='pm2_5' "
+                            "AND modelo=%s", (NODO, modelo))          # permite volver a ejecutar
+                filas = [((t + timedelta(minutes=5 * PASOS_ADELANTE)).to_pydatetime(),
+                          NODO, "pm2_5", float(v), modelo) for t, v in oof[nombre].items()]
+                cur.executemany("INSERT INTO predicciones (timestamp, nodo_id, variable, "
+                                "valor_predicho, modelo) VALUES (%s,%s,%s,%s,%s)", filas)
+        print(f"Guardadas predicciones fuera de muestra (*_cv_{VERSION}) en 'predicciones'.")
+    finally:
+        conn.close()
 
 
 # ---------------------------------------------------------------- validacion cruzada temporal
@@ -132,12 +156,20 @@ elif folds_ganados < N_FOLDS:
 
 # ---------------------------------------------------------------- modelos finales
 finales = {
-    f"{nombre}_v3": m.fit(datos[cols], delta(datos))
+    f"{nombre}_{VERSION}": m.fit(datos[cols], delta(datos))
     for nombre, m in crear_modelos().items()
 }
 joblib.dump({
     "modelos": finales,
-    "mejor": f"{mejor}_v3",
+    "mejor": f"{mejor}_{VERSION}",
     "features": cols,
 }, "modelo.joblib")
-print(f"Guardados {len(finales)} modelos en modelo.joblib (mejor: {mejor}_v3)")
+print(f"Guardados {len(finales)} modelos en modelo.joblib (mejor: {mejor}_{VERSION})")
+
+# ---------------------------------------------------------------- predicciones sin sesgo para el panel
+try:
+    guardar_cv(oof, candidatos)
+except Exception as e:      # el modelo ya quedo guardado; esto solo afecta al grafico
+    print(f"No se pudieron guardar las predicciones del panel: {e}")
+    print("Revisa DB_W_USER/DB_W_PASS en ml/.env y que ml_writer tenga INSERT, SELECT y DELETE "
+          "sobre 'predicciones'.")

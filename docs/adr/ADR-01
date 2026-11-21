@@ -1,0 +1,18 @@
+# ADR-01: Transporte de datos al servidor (MQTT vs. Inserción Directa)
+
+## 1. Contexto
+El sistema requiere transportar los datos recibidos por la estación base (receptor LoRa conectado vía serial) hacia la base de datos central (MariaDB). Inicialmente se consideró el uso de un broker MQTT, solicitudes REST o inserción directa. En la reunión del 5 de noviembre (RET-10), el profesor sugirió evaluar MQTT (con Calidad de Servicio, QoS) frente a sockets TCP con datos binarios.
+
+## 2. Decisión
+Para el Sprint 3, se decide implementar la **inserción directa a MariaDB** mediante el script local `registrador.py` (usando la librería `PyMySQL` de Python). 
+La evaluación en profundidad de MQTT (QoS) o TCP binario queda pospuesta para la Etapa 4, coincidiendo con el despliegue del sistema en el servidor de la universidad.
+
+## 3. Justificación Técnica
+* **Topología actual (Entorno Local):** Dado que durante esta etapa la estación base y la base de datos MariaDB se ejecutan en la misma máquina física (el PC de la autora), agregar un broker MQTT introduce complejidad arquitectónica y sobrecarga de red (overhead) sin aportar beneficios reales de enrutamiento o resiliencia de red sobre largas distancias.
+* **Agilidad de Desarrollo:** La inserción directa vía SQL permite un mapeo rápido y un control inmediato sobre las validaciones (checksum, tipos de datos, largos) antes del almacenamiento, lo cual fue crítico para cumplir con las pruebas de extremo a extremo en esta etapa (Sprint 3).
+* **Dependencia del Despliegue:** La verdadera ventaja de MQTT (especialmente QoS 1 o 2 para garantizar la entrega) se materializará cuando el script registrador opere en una red local conectada al receptor LoRa, y envíe los datos al servidor externo de la universidad (ADR-04).
+
+## 4. Consecuencias
+* **Positiva:** Se logró habilitar el flujo completo de datos (ingesta, almacenamiento y visualización) de manera rápida y eficiente.
+* **Negativa/Riesgo:** Si ocurre una desconexión entre el script y la base de datos (cuando estén en máquinas separadas), los datos podrían perderse si no se implementa un buffer temporal local.
+* **Plan de Acción (Etapa 4):** Una vez habilitado el acceso al servidor universitario, se evaluará la migración de la inserción directa a un esquema de publicación MQTT con QoS > 0, respondiendo directamente a la observación RET-10.

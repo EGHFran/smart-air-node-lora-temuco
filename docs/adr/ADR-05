@@ -1,0 +1,27 @@
+ADR-05: Selección de Algoritmos de Machine Learning para el Modelo Predictivo
+1. Contexto
+En la Etapa 1 del proyecto se propuso el uso de arquitecturas complejas como redes neuronales recurrentes (LSTM) y XGBoost para el pronóstico de PM2,5 a 1 hora. Sin embargo, al iniciar el Sprint 4 (modelado predictivo), el sistema cuenta con un volumen de datos inicial correspondiente a aproximadamente 11 días de recolección continua desde un único nodo (3.212 filas útiles tras el preprocesamiento).   
+
+2. Decisión
+Se decide descartar temporalmente el uso de LSTM y XGBoost, implementando en su lugar un pipeline basado en algoritmos de scikit-learn más ligeros y robustos para conjuntos de datos pequeños: Regresión Ridge (lineal regularizado), Gradient Boosting Regressor (GBR) y Random Forest (RF).   
+
+3. Justificación Técnica
+Volumen de datos y riesgo de sobreajuste: Las redes LSTM requieren grandes volúmenes de datos históricos para aprender dependencias temporales sin memorizar el ruido. Entrenar un modelo complejo con solo 3.212 muestras resultaría en un sobreajuste severo.
+
+Evidencia empírica de convergencia: Durante el entrenamiento del 8 de noviembre (prueba P-12), el Perceptrón Multicapa (MLP) no logró converger después de 800 iteraciones, validando que los datos actuales carecen de la densidad necesaria para entrenar redes neuronales de manera estable.   
+
+
+Establecimiento de una línea base sólida: La Regresión Ridge penaliza la complejidad del modelo, haciéndola excelente para datasets pequeños con variables correlacionadas. Ridge demostró superar a la persistencia (cambio cero) en un 13,5% en términos de RMSE (11,40 µg/m³ frente a 13,19 µg/m³).   
+
+
+Agilidad computacional: Los modelos de scikit-learn son más rápidos de entrenar y predecir, facilitando su integración en la API de FastAPI sin requerir los recursos de frameworks pesados de Deep Learning.   
+
+
+4. Consecuencias
+Positiva: Se logró implementar y validar un pipeline funcional de extremo a extremo, obteniendo un modelo que ya supera el pronóstico de persistencia.   
+
+
+Negativa: Se pospone la exploración de dependencias temporales complejas a largo plazo (RNF-QOS-10 no se cumple aún, con un R² máximo de 0,27).   
+
+
+Mitigación: La arquitectura modular en ml/entrenar.py y ml/predecir.py permite que, al recolectar más meses de datos en el servidor de la universidad, el modelo Ridge pueda ser fácilmente reemplazado por XGBoost o LSTM sin alterar la base de datos ni la aplicación React.   
